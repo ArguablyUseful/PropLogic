@@ -1,5 +1,5 @@
 # PropLogic
-propositional logic software
+propositional logic software based on "artificial intelligence : a modern approach"
 
 file "main" (in the root directory) shows an example of use
 
