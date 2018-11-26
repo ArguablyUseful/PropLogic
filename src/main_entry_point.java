@@ -19,7 +19,7 @@ public class main_entry_point {
 		String str_sentence = "(B11 <=> (P12 || P21)) && !B11";
 		KB kb = new KB();
 		kb.Tell(str_sentence);
-		Sentence a = Sentence.GetSentenceFromString("B11");
+		Sentence a = Sentence.GetSentenceFromString("P12");
 		boolean result = PropositionLogicTruth.PL_Resolution(kb, a);
 		System.out.println("result = " + result);
 	}/*

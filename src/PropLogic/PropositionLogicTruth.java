@@ -148,12 +148,13 @@ public class PropositionLogicTruth {
 		
 		try {
 			HashSet<Clause> clauses = new HashSet<Clause>();
-			/*for(Clause c : Clause.CNFClauses(toWorkOnCNF)) 
+			for(Clause c : Clause.CNFClauses(toWorkOnCNF)) 
 			{
 				Clause temporary = c.removeComplementaryLiterals();
-				clauses.add(temporary);
-				//System.out.println(temporary.toString());
-			}*/
+				if ( temporary.getCountLiterals() > 0)
+					clauses.add(temporary);
+				System.out.println(temporary.toString());
+			}
 				 
 			//from here we have a set of clauses saying ( KB && !a ).
 			while(true)
@@ -171,23 +172,23 @@ public class PropositionLogicTruth {
 						if ( Clause.countComplementaryLiterals(clauseC) > 1) //if there is more than one pair of complementary literals, then the new clause is the equivalent of TRUE which is inferentially worthless
 							continue;
 						
-						/*System.out.println("Clause A = " + clauseA.toString());
+						System.out.println("Clause A = " + clauseA.toString());
 						System.out.println("Clause B = " + clauseB.toString());
-						System.out.println("Clause C (merging A and B)= " + clauseC.toString());*/
+						System.out.println("Clause C (merging A and B)= " + clauseC.toString());
 						clauseC = clauseC.removeComplementaryLiterals();
-						//System.out.println("Clause C (stripped from complementaries)= " + clauseC.toString());
+						System.out.println("Clause C (stripped from complementaries)= " + clauseC.toString());
 						
 						if ( clauseC.getCountLiterals() == 0)
 							return true; // we have the empty clause.
 						if ( !resolvents.contains(clauseC) && !clauses.contains(clauseC))
 						{
-							//System.out.println("Add to clauses : " + clauseC.toString());
+							System.out.println("Add to clauses : " + clauseC.toString());
 							resolvents.add(clauseC);
 						} else
 						{
-							//System.out.println("Not adding clause C.");
+							System.out.println("Not adding clause C.");
 						}
-						//System.out.println("---------------");
+						System.out.println("---------------");
 					}
 				}
 				//if resolvents is empty or all clauses in resolvents are already in "clauses", return false
