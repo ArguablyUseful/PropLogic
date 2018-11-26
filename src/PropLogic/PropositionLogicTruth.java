@@ -148,14 +148,7 @@ public class PropositionLogicTruth {
 		
 		try {
 			HashSet<Clause> clauses = new HashSet<Clause>();
-			for(Clause c : Clause.CNFClauses(toWorkOnCNF)) 
-			{
-				Clause temporary = c.removeComplementaryLiterals();
-				if ( temporary.getCountLiterals() > 0)
-					clauses.add(temporary);
-				System.out.println(temporary.toString());
-			}
-				 
+			clauses.addAll(Clause.CNFClauses(toWorkOnCNF));				 
 			//from here we have a set of clauses saying ( KB && !a ).
 			while(true)
 			{
@@ -166,29 +159,38 @@ public class PropositionLogicTruth {
 					{
 						if ( clauseA.equals(clauseB))
 							continue;
+						boolean toPrint = false;
 						//if clauseA and clauseB share two complementary, we can create clauseC that contains everything but those 2 complementary
 						//if clauseC contains other complementary, it is worthless (because C OR !C OR <whatever> is equivalent to TRUE or <anything> which is equivalent to TRUE.)
 						Clause clauseC = clauseA.mergeClauses(clauseB);
-						if ( Clause.countComplementaryLiterals(clauseC) > 1) //if there is more than one pair of complementary literals, then the new clause is the equivalent of TRUE which is inferentially worthless
+						int countComplementaryLiterals =Clause.countComplementaryLiterals(clauseC); 
+						if (  countComplementaryLiterals > 1 || countComplementaryLiterals == 0) //if there is more than one pair of complementary literals, then the new clause is the equivalent of TRUE which is inferentially worthless
 							continue;
-						
-						System.out.println("Clause A = " + clauseA.toString());
-						System.out.println("Clause B = " + clauseB.toString());
-						System.out.println("Clause C (merging A and B)= " + clauseC.toString());
+						String str = "";
+						str += "Clause A = " + clauseA.toString() + "\n";
+						str += "Clause B = " + clauseB.toString() + "\n";
+						str += "Clause C (merging A and B)= " + clauseC.toString() + "\n";
 						clauseC = clauseC.removeComplementaryLiterals();
-						System.out.println("Clause C (stripped from complementaries)= " + clauseC.toString());
+						str += "Clause C (stripped from complementaries)= " + clauseC.toString() + "\n";
 						
 						if ( clauseC.getCountLiterals() == 0)
+						{
+							str += "Empty clause found\n";
+							System.out.println(str);
 							return true; // we have the empty clause.
+						}
 						if ( !resolvents.contains(clauseC) && !clauses.contains(clauseC))
 						{
-							System.out.println("Add to clauses : " + clauseC.toString());
+							str += "Add to clauses : " + clauseC.toString() + "\n";
 							resolvents.add(clauseC);
+							toPrint = true;
 						} else
 						{
-							System.out.println("Not adding clause C.");
+							str += "Not adding clause C." + "\n";
 						}
-						System.out.println("---------------");
+						str += "---------------" + "\n";
+						if ( toPrint )
+							 System.out.println(str);
 					}
 				}
 				//if resolvents is empty or all clauses in resolvents are already in "clauses", return false

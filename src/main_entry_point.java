@@ -11,6 +11,18 @@ import Sentences.Clause;
 import Sentences.Sentence;
 
 public class main_entry_point {
+	public static void testing_3() throws Exception
+	{
+		KB kb = new KB();
+		String str_sentence = "";
+		
+		str_sentence = "(B11 <=> (P12 || P21)) && !B11";
+		kb.Tell(str_sentence);
+		
+		Sentence a = Sentence.GetSentenceFromString("P12");
+		boolean result = PropositionLogicTruth.PL_Resolution(kb, a);
+		System.out.println("result = " + result);
+	}
 	public static void testing_2() throws Exception
 	{
 		//testing resolution over a simple example
@@ -19,7 +31,7 @@ public class main_entry_point {
 		String str_sentence = "(B11 <=> (P12 || P21)) && !B11";
 		KB kb = new KB();
 		kb.Tell(str_sentence);
-		Sentence a = Sentence.GetSentenceFromString("P12");
+		Sentence a = Sentence.GetSentenceFromString("!P12");
 		boolean result = PropositionLogicTruth.PL_Resolution(kb, a);
 		System.out.println("result = " + result);
 	}/*
