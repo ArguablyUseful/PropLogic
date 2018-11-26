@@ -145,8 +145,16 @@ public class PropositionLogicTruth {
 		ComplexSentence notA = new ComplexSentence(a, ComplexSentence.ConnectiveTypes.NOT, null);
 		Sentence toWorkOn = new ComplexSentence(kb.GetKBContent(), ComplexSentence.ConnectiveTypes.AND,notA);
 		Sentence toWorkOnCNF = CNF.ToCNF(toWorkOn);
+		
 		try {
-			HashSet<Clause> clauses = Clause.CNFClauses(toWorkOnCNF); 
+			HashSet<Clause> clauses = new HashSet<Clause>();
+			/*for(Clause c : Clause.CNFClauses(toWorkOnCNF)) 
+			{
+				Clause temporary = c.removeComplementaryLiterals();
+				clauses.add(temporary);
+				//System.out.println(temporary.toString());
+			}*/
+				 
 			//from here we have a set of clauses saying ( KB && !a ).
 			while(true)
 			{
@@ -157,15 +165,29 @@ public class PropositionLogicTruth {
 					{
 						if ( clauseA.equals(clauseB))
 							continue;
+						//if clauseA and clauseB share two complementary, we can create clauseC that contains everything but those 2 complementary
+						//if clauseC contains other complementary, it is worthless (because C OR !C OR <whatever> is equivalent to TRUE or <anything> which is equivalent to TRUE.)
 						Clause clauseC = clauseA.mergeClauses(clauseB);
+						if ( Clause.countComplementaryLiterals(clauseC) > 1) //if there is more than one pair of complementary literals, then the new clause is the equivalent of TRUE which is inferentially worthless
+							continue;
+						
+						/*System.out.println("Clause A = " + clauseA.toString());
+						System.out.println("Clause B = " + clauseB.toString());
+						System.out.println("Clause C (merging A and B)= " + clauseC.toString());*/
 						clauseC = clauseC.removeComplementaryLiterals();
+						//System.out.println("Clause C (stripped from complementaries)= " + clauseC.toString());
+						
 						if ( clauseC.getCountLiterals() == 0)
 							return true; // we have the empty clause.
 						if ( !resolvents.contains(clauseC) && !clauses.contains(clauseC))
+						{
+							//System.out.println("Add to clauses : " + clauseC.toString());
 							resolvents.add(clauseC);
-						//resolve clauseA with clauseB to create clauseC 
-						//if clauseC is empty clause => return true
-						//adds clauseC to resolvents
+						} else
+						{
+							//System.out.println("Not adding clause C.");
+						}
+						//System.out.println("---------------");
 					}
 				}
 				//if resolvents is empty or all clauses in resolvents are already in "clauses", return false

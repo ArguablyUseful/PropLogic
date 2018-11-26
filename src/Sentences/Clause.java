@@ -83,7 +83,21 @@ public class Clause {
 
 	//create a new clause from the literals of this clause
 	//remove all complementary literals 
-	//I.E. (A OR B OR !A OR C) becomes (B OR C)
+	//I.E. (A OR B OR !A OR C) becomes (TRUE OR B OR C)
+	//here is the problem see above : TRUE OR anything is TRUE.
+	public static int countComplementaryLiterals(Clause A)
+	{
+		int count = 0;
+		for(Sentence s : A.literals)
+		{
+			Sentence complementary = Utils.GetComplementaryLiteral(s);
+			if ( A.literals.contains(complementary))
+			{
+				count++;
+			}
+		}
+		return count/2; // counting the pairs of complementary.
+	}
 	public Clause removeComplementaryLiterals() throws Exception
 	{
 		LinkedList<Sentence> lst = new LinkedList<Sentence>();

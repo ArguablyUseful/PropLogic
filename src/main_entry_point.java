@@ -14,14 +14,21 @@ public class main_entry_point {
 	public static void testing_2() throws Exception
 	{
 		//testing resolution over a simple example
-		String str_sentence = "B11 <=> (P12 || P21)";
+		//Breeze in 1,1 means there's a pit either in P 1,2 or in P 2,1 or both
+		//and there is no breeze
+		String str_sentence = "(B11 <=> (P12 || P21)) && !B11";
 		KB kb = new KB();
 		kb.Tell(str_sentence);
-		Sentence a = Sentence.GetSentenceFromString("!B11");
+		Sentence a = Sentence.GetSentenceFromString("B11");
 		boolean result = PropositionLogicTruth.PL_Resolution(kb, a);
-		System.out.println("result = " + result + "should be true");
-	}
-	
+		System.out.println("result = " + result);
+	}/*
+	(P12 || !B11 || P21)
+	(B11 || !P21)
+	(!P12 || B11)
+	(!B11)
+	(!P12)
+	*/
 	public static void testing_1() throws Exception
 	{
 		String sentenceStringForm = "A=>B || C && !(D <=> E  )";
