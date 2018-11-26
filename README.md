@@ -12,6 +12,7 @@ It is a propositional logic engine that allow the building of a knowledge base m
 5) The engine include conversion methods from string to ast sentences, from ast sentences to CNF sentences and from CNF to "clauses".  Each sentence also has a toString() implemented to make it human readable.
 
 no debug was done yet
+TODO : resolution is buggued : it create wrong "true" sentences
 code & comments not cleaned yet
 
 directory "Format" contains 
