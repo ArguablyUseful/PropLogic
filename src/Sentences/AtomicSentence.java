@@ -9,4 +9,5 @@ public class AtomicSentence extends Sentence
 		this.symbol = symbol;
 	}
 	public String GetSymbol() { return this.symbol; }
+	
 }

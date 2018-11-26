@@ -1,6 +1,11 @@
 package Sentences;
 
+import java.util.List;
 import java.util.TreeSet;
+
+import Format.ShuntingYard;
+import Format.Tokenizer;
+import Format.Tokens;
 
 /*
  * Sentence -> AtomicSentence | ComplexSentence
@@ -14,7 +19,7 @@ import java.util.TreeSet;
  * 					| Sentence <=> Sentence (equi)
  * 
  */
-public abstract class Sentence {
+public abstract class Sentence implements Comparable<Sentence> {
 	public enum SentenceType { ATOMIC, COMPLEX };
 	
 	private SentenceType type;
@@ -95,25 +100,39 @@ public abstract class Sentence {
 		return result;
 	}
 	
+	@Override
+	public int hashCode() {
+		return this.toString().hashCode();
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Sentence other = (Sentence) obj;
+		if (type != other.type)
+			return false;
+		return Sentence.SentenceAreTheSame(this, other);
+	}
 	public static boolean SentenceAreTheSame(Sentence A, Sentence B)
 	{
 		if  ( A == null || B == null)
 			return false;
-		if ( A.GetSentenceType() == B.GetSentenceType())
-		{
-			if ( A.GetSentenceType() == Sentence.SentenceType.ATOMIC)
-			{
-				AtomicSentence aA = (AtomicSentence)A;
-				AtomicSentence aB = (AtomicSentence)B;
-				return aA.GetSymbol().equals(aB.GetSymbol());
-			} else 
-			{
-				ComplexSentence csA = (ComplexSentence)A;
-				ComplexSentence csB = (ComplexSentence)B;
-				return csA.GetConnective() == csB.GetConnective() 
-						&& Sentence.SentenceAreTheSame(csA.GetLeftSentence(),csB.GetLeftSentence())
-						&& Sentence.SentenceAreTheSame(csA.GetRightSentence(),csB.GetRightSentence());
-			}
-		} else return false;
+		return A.toString().equals(B.toString());
+	}
+	public static Sentence GetSentenceFromString(String s)
+	{
+		List<Tokens> sentenceTokenized = Tokenizer.tokenize(s);
+		List<Tokens> sortedSentenceTokenized = ShuntingYard.PostfixTokens(sentenceTokenized);
+		Sentence sentenceASTForm = ShuntingYard.ASTFromSortedTokens(sortedSentenceTokenized, true);
+		return sentenceASTForm;
+	}
+	@Override
+	public int compareTo(Sentence that)
+	{
+		return this.toString().compareTo(that.toString());
 	}
 }

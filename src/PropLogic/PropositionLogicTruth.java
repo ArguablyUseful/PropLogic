@@ -1,8 +1,12 @@
 package PropLogic;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 
+import Format.CNF;
 import Sentences.AtomicSentence;
+import Sentences.Clause;
 import Sentences.ComplexSentence;
 import Sentences.Sentence;
 import Sentences.Utils;
@@ -126,5 +130,55 @@ public class PropositionLogicTruth {
 			
 			return nextSymBeingTrue && nextSymBeingFalse;
 		}
+	}
+	
+	
+	public static boolean PL_Resolution(KB kb, Sentence a)
+	{
+		//we want to prove that there is no way that kb AND not A can be true (which means kb AND a is true) 
+		//we'll try to find an empty clause that means the sentence is false. 
+		
+		//1 we create sentence KB && !a
+		//2we turn it into CNF
+		//3we create list of clauses from that CNF sentence
+		//we apply resolution rules	 
+		ComplexSentence notA = new ComplexSentence(a, ComplexSentence.ConnectiveTypes.NOT, null);
+		Sentence toWorkOn = new ComplexSentence(kb.GetKBContent(), ComplexSentence.ConnectiveTypes.AND,notA);
+		Sentence toWorkOnCNF = CNF.ToCNF(toWorkOn);
+		try {
+			HashSet<Clause> clauses = Clause.CNFClauses(toWorkOnCNF); 
+			//from here we have a set of clauses saying ( KB && !a ).
+			while(true)
+			{
+				HashSet<Clause> resolvents = new HashSet<Clause>();
+				for( Clause clauseA : clauses )
+				{
+					for(Clause clauseB : clauses)
+					{
+						if ( clauseA.equals(clauseB))
+							continue;
+						Clause clauseC = clauseA.mergeClauses(clauseB);
+						clauseC = clauseC.removeComplementaryLiterals();
+						if ( clauseC.getCountLiterals() == 0)
+							return true; // we have the empty clause.
+						if ( !resolvents.contains(clauseC) && !clauses.contains(clauseC))
+							resolvents.add(clauseC);
+						//resolve clauseA with clauseB to create clauseC 
+						//if clauseC is empty clause => return true
+						//adds clauseC to resolvents
+					}
+				}
+				//if resolvents is empty or all clauses in resolvents are already in "clauses", return false
+				if ( resolvents.size() == 0)
+					return false;
+				//otherwise adds resolvents to clauses
+				clauses.addAll(resolvents);
+			}
+		} catch (Exception e) {
+			System.out.println("Clause exception-toWorkOnCNF is not CNF ?! : " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 }

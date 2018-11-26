@@ -1,4 +1,9 @@
 package PropLogic;
+import java.util.List;
+
+import Format.ShuntingYard;
+import Format.Tokenizer;
+import Format.Tokens;
 import Sentences.ComplexSentence;
 import Sentences.Sentence;
 
@@ -25,6 +30,10 @@ public class KB {
 				this.kb = cs;
 			}
 		}
+	}
+	public void Tell(String toTell)
+	{
+		this.Tell(Sentence.GetSentenceFromString(toTell));
 	}
 	
 }
