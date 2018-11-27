@@ -1,7 +1,6 @@
 package PropLogic;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.TreeSet;
 
 import Format.CNF;
@@ -11,7 +10,23 @@ import Sentences.ComplexSentence;
 import Sentences.Sentence;
 import Sentences.Utils;
 
+/**
+ * 
+ * @author Corentin
+ * This class deals with truth checking and inference checking.
+ * EvalutateSentence check the truth value of a sentence given a model for the symbols used by the sentence.
+ * TT_Entails_ModelChecking() check if the KB kb entails sentence "a" by checking all models.
+ * PL_resolution check if the KB kb entails sentence "a" by using the resolution rule.
+ */
 public class PropositionLogicTruth {
+	
+	/**
+	 * 
+	 * @param s the sentence we wish to evalute
+	 * @param m the model containing the truth value of symbols used by the sentence s
+	 * @return true if the sentence holds, false if it doesn't hold, null if the truth cannot be determined due to missing truth in the model
+	 * note : the "null" value exist because not all symbol needs to be defined by the model to determine the truth of a sentence, but sometimes we need more. 
+	 */
 	public static Boolean EvaluateSentence(Sentence s, Model m)
 	{
 		Boolean evaluation = null;
@@ -86,6 +101,16 @@ public class PropositionLogicTruth {
 	/*
 	 * should be 2^symQty in time and symQty in space
 	 */
+	/**
+	 * Determine if KB entails "a" by using the model checking method.
+	 * Complexity depends on the quantity of symbols (symQty)
+	 * Time complexity is 2^symQty
+	 * Space complexity is symQty.
+	 * 
+	 * @param kb the knowledge base
+	 * @param a the sentence
+	 * @return true means KB entails a. false means KB do not entails a.
+	 */
 	public static boolean TT_Entails_ModelChecking(KB kb, Sentence a)
 	{
 		LinkedList<String> symbols = new LinkedList<String>();
@@ -101,8 +126,15 @@ public class PropositionLogicTruth {
 		return TT_Check_All(kb, a, symbols, new Model());
 	}
 	
-	
-	public static boolean TT_Check_All(KB kb, Sentence a, LinkedList<String> symbols, Model m)
+	/**
+	 * black magic.
+	 * @param kb
+	 * @param a
+	 * @param symbols
+	 * @param m
+	 * @return
+	 */
+	private static boolean TT_Check_All(KB kb, Sentence a, LinkedList<String> symbols, Model m)
 	{
 		if ( symbols.isEmpty())
 		{
@@ -132,16 +164,25 @@ public class PropositionLogicTruth {
 		}
 	}
 	
-	
+	/**
+	 * PL Resolution algorithm.
+	 * KB and Sentence a will be turned into CNF
+	 * TODO check that both KB and Sentence are not altered after this call
+	 * @param kb the knowledge base
+	 * @param a the sentence a
+	 * @return true if KB entails A, false otherwise
+	 */
 	public static boolean PL_Resolution(KB kb, Sentence a)
 	{
 		//we want to prove that there is no way that kb AND not A can be true (which means kb AND a is true) 
-		//we'll try to find an empty clause that means the sentence is false. 
+		//we'll try to find an empty clause that means the sentence kb && !a is false. 
 		
 		//1 we create sentence KB && !a
 		//2we turn it into CNF
 		//3we create list of clauses from that CNF sentence
 		//we apply resolution rules	 
+		boolean debug_printing = false; // if true, it will print information about the inference process to system.out
+		
 		ComplexSentence notA = new ComplexSentence(a, ComplexSentence.ConnectiveTypes.NOT, null);
 		Sentence toWorkOn = new ComplexSentence(kb.GetKBContent(), ComplexSentence.ConnectiveTypes.AND,notA);
 		Sentence toWorkOnCNF = CNF.ToCNF(toWorkOn);
@@ -167,30 +208,44 @@ public class PropositionLogicTruth {
 						if (  countComplementaryLiterals > 1 || countComplementaryLiterals == 0) //if there is more than one pair of complementary literals, then the new clause is the equivalent of TRUE which is inferentially worthless
 							continue;
 						String str = "";
-						str += "Clause A = " + clauseA.toString() + "\n";
-						str += "Clause B = " + clauseB.toString() + "\n";
-						str += "Clause C (merging A and B)= " + clauseC.toString() + "\n";
+						if ( debug_printing )
+						{
+							str += "Clause A = " + clauseA.toString() + "\n";
+							str += "Clause B = " + clauseB.toString() + "\n";
+							str += "Clause C (merging A and B)= " + clauseC.toString() + "\n";	
+						}
+						
 						clauseC = clauseC.removeComplementaryLiterals();
-						str += "Clause C (stripped from complementaries)= " + clauseC.toString() + "\n";
+						
+						if ( debug_printing )
+							str += "Clause C (stripped from complementaries)= " + clauseC.toString() + "\n";
 						
 						if ( clauseC.getCountLiterals() == 0)
 						{
-							str += "Empty clause found\n";
-							System.out.println(str);
+							if ( debug_printing )
+							{
+								str += "Empty clause found\n";
+								System.out.println(str);	
+							}
 							return true; // we have the empty clause.
 						}
 						if ( !resolvents.contains(clauseC) && !clauses.contains(clauseC))
 						{
-							str += "Add to clauses : " + clauseC.toString() + "\n";
+							if ( debug_printing )
+								str += "Add to clauses : " + clauseC.toString() + "\n";
 							resolvents.add(clauseC);
 							toPrint = true;
 						} else
 						{
-							str += "Not adding clause C." + "\n";
+							if ( debug_printing )
+								str += "Not adding clause C." + "\n";
 						}
-						str += "---------------" + "\n";
-						if ( toPrint )
-							 System.out.println(str);
+						if ( debug_printing )
+						{
+							str += "---------------" + "\n";
+							if ( toPrint )
+								 System.out.println(str);
+						}
 					}
 				}
 				//if resolvents is empty or all clauses in resolvents are already in "clauses", return false

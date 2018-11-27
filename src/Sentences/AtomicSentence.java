@@ -1,5 +1,11 @@
 package Sentences;
 
+/**
+ * 
+ * @author Corentin
+ * an Atomic sentence is simply a symbol without connective.
+ * see Sentence
+ */
 public class AtomicSentence extends Sentence 
 {
 	private String symbol;

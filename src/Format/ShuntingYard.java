@@ -9,11 +9,38 @@ import Sentences.ComplexSentence;
 import Sentences.ComplexSentence.ConnectiveTypes;
 import Sentences.Sentence;
 
+/**
+ * 
+ * @author Corentin
+ * This class is used to turn a stream of Token (provided by Tokenizer from text stream) into an Abstract Syntax Tree (AST) of Sentence (see Sentences/Sentence).
+ * the method PostfixTokens turns an infix token stream into a postfix token stream
+ * the private method ASTFromSortedTokens then use this postfix sorted stream of tokens to generate the AST representation of the PL Sentence.
+ * the method "ASTFromPostfixTokens()" is used to gives the user access to ASTFromSortedTokens without exposing the boolean used by the recursion. 
+ */
 public class ShuntingYard {
-
-	//when calling this method, set firstCall to true
-	//firstCall is used to detect wheter or not we are inside a recursive call
-	public static Sentence ASTFromSortedTokens(List<Tokens> tokenspf, boolean firstCall)
+	
+	/**
+	 * implementation of Dijskra's Shunting Yard algorithm.
+	 * note : this do not check for the validity of the stream of tokens. If the list of token provided is not valid, behavior is undefined.
+	 * @param postfixTokens the list of tokens representing the PL Sentence in post fix order
+	 * @return the root node of an AST representing the PL sentence or null.
+	 */
+	public static Sentence ASTFromPostfixTokens(List<Tokens> postfixTokens)
+	{
+		try {
+			return ShuntingYard.ASTFromSortedTokens(postfixTokens, true);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	/**
+	 * 
+	 * @param tokenspf a list of tokens in post fix order
+	 * @param firstCall a boolean value used by the recursion
+	 * @return the root node of an AST or null. 
+	 * @throws Exception for errors. Note that only one error is detected : a token list starting with a closing parenthesis.
+	 */
+	private static Sentence ASTFromSortedTokens(List<Tokens> tokenspf, boolean firstCall) throws Exception
 	{
 		Stack<Sentence> left, right;
 		left = new Stack<Sentence>();
@@ -111,10 +138,9 @@ public class ShuntingYard {
 							return left.pop();
 					} else
 					{
-						System.out.println("Problem");
+						throw new Exception("A valid PL Sentence cannot start with closing parenthesis ')'");
 					}
 				}
-				break;
 			}
 		}
 		return left.pop();
@@ -122,6 +148,7 @@ public class ShuntingYard {
 	/*
 	 * turn infix token stream into postfix token stream
 	 */
+	@SuppressWarnings("incomplete-switch")
 	public static LinkedList<Tokens> PostfixTokens(List<Tokens> tokens)
 	{
 		LinkedList<Tokens> output = new LinkedList<Tokens>();

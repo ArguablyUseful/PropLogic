@@ -1,5 +1,14 @@
 package Sentences;
 
+/**
+ * 
+ * @author Corentin
+ * a complex sentence is made out of sentences that can be either atomic or complex.
+ * a complex sentence always has a connective.
+ * there is only one unary connective (NOT), the others are binary.
+ * NONE is an invalid connective.
+ * see Sentence
+ */
 public class ComplexSentence extends Sentence
 {
 	public enum ConnectiveTypes{ NONE, NOT, AND, OR, IMPLY, EQUI};

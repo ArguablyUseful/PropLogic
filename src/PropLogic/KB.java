@@ -1,21 +1,22 @@
 package PropLogic;
-import java.util.List;
-
-import Format.ShuntingYard;
-import Format.Tokenizer;
-import Format.Tokens;
 import Sentences.ComplexSentence;
 import Sentences.Sentence;
 
+/**
+ * 
+ * @author Corentin
+ * This class is the knowledge base (KB) containing one single PL sentence.
+ * new Sentence can be added using the "Tell" method. (KB becomes KB && new sentence)
+ */
 public class KB {
 	
 	Sentence kb = null;
 	
-	public KB()
-	{
-		
-	}
 	public Sentence GetKBContent() { return this.kb; }
+	/**
+	 * KB becomes KB && toTell
+	 * @param toTell the sentence to add to the KB
+	 */
 	public void Tell(Sentence toTell)
 	{
 		if ( toTell != null )
@@ -31,6 +32,10 @@ public class KB {
 			}
 		}
 	}
+	/**
+	 * KB becomes KB && toTell
+	 * @param toTell the sentence to add to the KB
+	 */
 	public void Tell(String toTell)
 	{
 		this.Tell(Sentence.GetSentenceFromString(toTell));

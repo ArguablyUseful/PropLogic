@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 
 import Format.CNF;
 import Format.ShuntingYard;
@@ -13,11 +14,17 @@ import Sentences.Sentence;
 public class main_entry_point {
 	public static void testing_3() throws Exception
 	{
+		//todo : a console that use the prop logic engine
 		KB kb = new KB();
-		String str_sentence = "";
+		String cmd = "";
+		String pattern_tell = "^tell *";
+		String pattern_print_kb = "^print *";
+		String pattern_check_entailment = "^entails *";
+		String pattern_exit = "^exit *";
+		Scanner scan = new Scanner(System.in);
 		
-		str_sentence = "(B11 <=> (P12 || P21)) && !B11";
-		kb.Tell(str_sentence);
+		cmd = scan.nextLine();
+		
 		
 		Sentence a = Sentence.GetSentenceFromString("P12");
 		boolean result = PropositionLogicTruth.PL_Resolution(kb, a);
@@ -34,13 +41,8 @@ public class main_entry_point {
 		Sentence a = Sentence.GetSentenceFromString("!P12");
 		boolean result = PropositionLogicTruth.PL_Resolution(kb, a);
 		System.out.println("result = " + result);
-	}/*
-	(P12 || !B11 || P21)
-	(B11 || !P21)
-	(!P12 || B11)
-	(!B11)
-	(!P12)
-	*/
+
+	}
 	public static void testing_1() throws Exception
 	{
 		String sentenceStringForm = "A=>B || C && !(D <=> E  )";
@@ -56,7 +58,7 @@ public class main_entry_point {
 		for(Tokens individualToken : sortedSentenceTokenized)
 			System.out.println("|" + individualToken.toString());
 		
-		Sentence sentenceASTForm = ShuntingYard.ASTFromSortedTokens(sortedSentenceTokenized, true);
+		Sentence sentenceASTForm = ShuntingYard.ASTFromPostfixTokens(sortedSentenceTokenized);
 		System.out.println(sentenceASTForm.toString());
 		
 		Sentence sentenceASTCNFForm = CNF.ToCNF(sentenceASTForm);
