@@ -15,9 +15,10 @@ no debug was done yet
 code & comments not cleaned yet
 
 directory "Format" contains 
-- the code to turn txt propositional logic sentence into sequences of tokens (Tokenizer)
-- the code to turn a sequence of tokens into AST (shuntingyard)
-- the code to turn a PL sentence into a CNF sentence (Conjunctive normal form)
+- CNF class. The purpose it to transform PL Sentence into their CNF equivalent.
+- Tokens class. The purpose is to have differents tokens for all parts of a PL Sentence in text string format
+- Tokenizer class. The purpose is to turn a text stream representing a PL Sentence into a stream of Tokens representing the same sentence.
+- ShuntingYard class. The purpose is to transform a sequence of infix Tokens into posfix sequence. Then, turn that postfix sequence into an AST representation using Sentence class (see below in "Sentences").
 
 directory "PropLogic" contains
 - the KB class (conjunction of propositional logic sentence in AST format)
