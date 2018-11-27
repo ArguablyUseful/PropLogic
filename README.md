@@ -21,15 +21,13 @@ directory "Format" contains
 - ShuntingYard class. The purpose is to transform a sequence of infix Tokens into posfix sequence. Then, turn that postfix sequence into an AST representation using Sentence class (see below in "Sentences").
 
 directory "PropLogic" contains
-- the KB class (conjunction of propositional logic sentence in AST format)
+- KB class. Purpose is to hold PL sentence in a handy way. It also allow to adds new sentences to what is already in the KB.
+- PLTruth class. Purpose is to be able to check for the truth of a PL Sentence given a Model of truth and check for entailments using two methods : model checking and Resolution.
 - the Model class (the truth value for symbols)
-- the PLTruth class that determine the truth value of sentence based on a model
-- and a model check algorithm
-- in PLTruth class : resolution algorithm based on a CNF formatted Sentence (using clauses)
 
 directory "ProplogicEquivalences" contains
-- the abstract class "LogicalEquivalence" used as an interface for every LogicalEquivalence
-- logical equivalence instances (associativity, de morgan, commutativity, etc including Factoring)
+- LogicalEquivalence class. All other classes in this directory directly implements this abstract class. The purpose is to be able to check wheter or not a logical equivalence could apply to a sentence, and what its result is.
+- Logical Equivalence implementations. Commutativity for OR and AND, associativity for OR and AND, double negation elimination, contraposition, implication elimination, biconditional elimination, De morgan rule for OR and AND, distributivity of OR over AND and of AND over OR.
 
 directory "Sentences" contains
 - the classes used to represent PL sentence in AST format
