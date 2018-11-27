@@ -30,8 +30,7 @@ directory "ProplogicEquivalences" contains
 - Logical Equivalence implementations. Commutativity for OR and AND, associativity for OR and AND, double negation elimination, contraposition, implication elimination, biconditional elimination, De morgan rule for OR and AND, distributivity of OR over AND and of AND over OR.
 
 directory "Sentences" contains
-- the classes used to represent PL sentence in AST format
-- clause class (see "proplogic")
-- turn a CNF sentence into a set of clauses to allow Resolution algorithm
-- a util class for various common sentence operations
+- Sentence, AtomicSentence and ComplexSentence classes. Purpose is to represent a PL sentence using AST structure.
+- Clause class. Purpose is to construct easy to handle object out of AST Sentence in CNF form.
+- Utils class. Purpose is to provide utility function to make coding and reading code easier.
 
